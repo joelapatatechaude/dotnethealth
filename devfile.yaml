@@ -25,7 +25,7 @@ components:
     - /dev/null
     endpoints:
     - name: http-dotnet60
-      targetPort: 8080
+      targetPort: 8081
     env:
     - name: CONFIGURATION
       value: Debug
@@ -34,10 +34,66 @@ components:
     - name: ASPNETCORE_ENVIRONMENT
       value: Development
     - name: ASPNETCORE_URLS
-      value: http://*:8080
-    image: registry.access.redhat.com/ubi8/dotnet-60:6.0-44
+      value: http://*:8081
+    image: registry.redhat.io/devspaces/udi-rhel8:latest
     mountSources: true
   name: dotnet
+
+- name: psql
+  container:
+    image: registry.redhat.io/rhel9/postgresql-15
+    env:
+      - name: POSTGRESQL_DATABASE
+        value: hapi
+      - name: POSTGRESQL_USER
+        value: admin
+      - name: POSTGRESQL_PASSWORD
+        value: admin
+    endpoints:
+      - name: psql
+        exposure: internal
+        targetPort: 5432
+    memoryLimit: '512Mi'
+    memoryRequest: '256Mi'
+    cpuLimit: '1'
+    cpuRequest: '0.25'
+    mountSources: false
+    volumeMounts:
+      - name: psql-storage
+        path: /var/lib/postgresql/data
+- name: psql-storage
+  volume:
+    size: 1G
+- name: fhir
+  container:
+    image: quay.io/jswanepo/hapi-js
+    env:
+      - name: profiles_active
+        value: r4
+      - name: spring_datasource_url
+        value: "jdbc:postgresql://localhost:5432/hapi"
+      - name: spring_datasource_username
+        value: admin
+      - name: spring_datasource_password
+        value: admin
+      - name: spring_datasource_driverClassName
+        value: org.postgresql.Driver
+      - name: spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation
+        value: "true"
+      - name: spring.jpa.properties.hibernate.dialect
+        value: "ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgres94Dialect"
+      - name: spring.jpa.properties.search.enabled
+        value: "false"
+    endpoints:
+      - name: fhir
+        exposure: internal
+        targetPort: 8080
+    memoryLimit: '2999Mi'
+    memoryRequest: '2999Mi'
+    cpuLimit: '1'
+    cpuRequest: '0.25'
+    mountSources: false
+
 metadata:
   description: .NET 6.0 application
   displayName: .NET 6.0

@@ -5,7 +5,7 @@ using Hl7.Fhir.Rest;
 
 public class PatientService : IPatientService
 {
-    private string _base_url = "http://fhir-server-fhir-service.common-tools:8080/fhir";
+    private string _base_url = "http://localhost:8080/fhir";
     static readonly HttpClient client = new HttpClient();
 
     public List<Patient> GetPatients()
@@ -13,7 +13,7 @@ public class PatientService : IPatientService
         var patients = new List<Patient>();
         // Simulating async operation
         try {
-            var fhirClient = new FhirClient("http://fhir-server-fhir-service.common-tools:8080/fhir").WithLenientSerializer();
+            var fhirClient = new FhirClient("http://localhost:8080/fhir").WithLenientSerializer();
             try
             {
                 var fhirpatients = fhirClient.Search<Hl7.Fhir.Model.Patient>();
@@ -70,7 +70,7 @@ public class PatientService : IPatientService
         var patient = new Patient();
         // Simulating async operation
         try {
-            var fhirClient = new FhirClient("http://fhir-server-fhir-service.common-tools:8080/fhir").WithLenientSerializer();
+            var fhirClient = new FhirClient("http://localhost:8080/fhir").WithLenientSerializer();
             try
             {
                 var fhirpatient = fhirClient.Read<Hl7.Fhir.Model.Patient>($"Patient/{id}");
