@@ -1,5 +1,17 @@
 commands:
 - exec:
+    commandLine: "echo \"Testing API is up\";
+      until curl --output /dev/null --silent --head --fail localhost:8080; do printf '.'; sleep 2; done;
+      echo \"API is up, loading data\";
+      cd TestData; for i in `ls`; do echo $i; curl -kv -X POST -H \"Content-Type: application/fhir+json; charset=UTF-8\" -d @$i localhost:8080/fhir/; done"
+    component: dotnet
+    group:
+      isDefault: true
+      kind: run
+    label: "Load data"
+    workingDir: ${PROJECT_SOURCE}
+  id: load
+- exec:
     commandLine: kill $(pidof dotnet); dotnet build -c $CONFIGURATION $STARTUP_PROJECT
       /p:UseSharedCompilation=false
     component: dotnet
