@@ -26,6 +26,8 @@ components:
     endpoints:
     - name: http-dotnet60
       targetPort: 8081
+      protocol: https
+      secure: true
     env:
     - name: CONFIGURATION
       value: Debug
