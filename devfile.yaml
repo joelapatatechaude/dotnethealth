@@ -1,5 +1,14 @@
 commands:
 - exec:
+    commandLine: "psql hapi admin -c \"select count(*) from hfj_resource ;\""
+    component: psql
+    group:
+      isDefault: true
+      kind: run
+    label: "Count hfj_resource"
+    workingDir: ${PROJECT_SOURCE}
+  id: query
+- exec:
     commandLine: "echo \"Testing API is up\";
       until curl --output /dev/null --silent --head --fail localhost:8080; do printf '.'; sleep 2; done;
       echo \"API is up, loading data\";
