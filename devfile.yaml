@@ -5,7 +5,7 @@ commands:
     group:
       isDefault: true
       kind: run
-    label: "Count hfj_resource"
+    label: "Count resource"
     workingDir: ${PROJECT_SOURCE}
   id: query
 - exec:
